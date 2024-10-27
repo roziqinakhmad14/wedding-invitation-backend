@@ -1,4 +1,5 @@
 const express = require('express')
+const moment = require('moment')
 const bodyParser = require('body-parser')
 const db = require('./connection')
 const app = express()
@@ -13,8 +14,10 @@ app.get('/', (req, res) => {
 })
 
 app.post('/', (req, res) => {
-  const { name, presence, numPresence, comment, token } = req.body;
-  db.query(`INSERT INTO comments VALUES (NULL, '${name}', '${presence}', '${numPresence}', '${comment}', '${token}')`, (error, result) => {
+  const { name, presence, numPresence, comment, token } = req.body
+  const createdAt = moment().format('YYYY-MM-DD HH:mm:ss')
+  const updatedAt = moment().format('YYYY-MM-DD HH:mm:ss')
+  db.query(`INSERT INTO comments VALUES (NULL, '${name}', '${presence}', '${numPresence}', '${comment}', '${token}', '${createdAt}', '${updatedAt}')`, (error, result) => {
     res.send(result)
   })
 })

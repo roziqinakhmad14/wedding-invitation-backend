@@ -1,0 +1,1 @@
+API for wedding invitation website
