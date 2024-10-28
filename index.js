@@ -55,3 +55,5 @@ app.post('/', (req, res) => {
 app.listen(port, () => {
   console.log(`Wedding invitation backend listening on port ${port}`)
 })
+
+module.exports = app;
