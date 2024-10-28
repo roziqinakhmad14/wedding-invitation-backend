@@ -20,7 +20,9 @@ app.use(bodyParser.json())
 app.use(requestIp.mw())
 
 app.get('/', (req, res) => {
-  db.query('SELECT * FROM comments ORDER BY created_at DESC', (error, result) => {
+  const limit = Number(req.query.per)
+  const offset = Number(req.query.next)
+  db.query(`SELECT * FROM comments ORDER BY created_at DESC LIMIT ${limit} OFFSET ${offset}`, (error, result) => {
     result.map(item => {
       item['created_at'] = moment.duration(moment(item['created_at']).diff(moment())).humanize() + ' lalu'
       item['updated_at'] = moment.duration(moment(item['updated_at']).diff(moment())).humanize() + ' lalu'
