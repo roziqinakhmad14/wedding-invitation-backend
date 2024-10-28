@@ -1,13 +1,12 @@
 const express = require('express')
-const serverless = require('serverless-http')
 const app = express()
-const router = express.Router()
 const moment = require('moment')
 const bodyParser = require('body-parser')
-const db = require('../connection')
+const db = require('./connection')
 const cors = require('cors')
 const uuid = require('uuid')
 const requestIp = require('request-ip')
+const port = 3000
 
 moment.locale('id')
 
@@ -16,24 +15,23 @@ const corsOptions = {
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 
-router.use(cors(corsOptions))
-router.use(bodyParser.json())
-router.use(requestIp.mw())
+app.use(cors(corsOptions))
+app.use(bodyParser.json())
+app.use(requestIp.mw())
 
-router.get('/', (req, res) => {
-  res.send('API is running')
-  // const limit = req.query.per ? Number(req.query.per) : 10;
-  // const offset = req.query.next ? Number(req.query.next) : 0;
-  // db.query(`SELECT * FROM comments ORDER BY created_at DESC LIMIT ${limit} OFFSET ${offset}`, (error, result) => {
-  //   result.map(item => {
-  //     item['created_at'] = moment.duration(moment(item['created_at']).diff(moment())).humanize() + ' lalu'
-  //     item['updated_at'] = moment.duration(moment(item['updated_at']).diff(moment())).humanize() + ' lalu'
-  //   })
-  //   res.status(200).json(result)
-  // })
+app.get('/', (req, res) => {
+  const limit = req.query.per ? Number(req.query.per) : 10;
+  const offset = req.query.next ? Number(req.query.next) : 0;
+  db.query(`SELECT * FROM comments ORDER BY created_at DESC LIMIT ${limit} OFFSET ${offset}`, (error, result) => {
+    result.map(item => {
+      item['created_at'] = moment.duration(moment(item['created_at']).diff(moment())).humanize() + ' lalu'
+      item['updated_at'] = moment.duration(moment(item['updated_at']).diff(moment())).humanize() + ' lalu'
+    })
+    res.status(200).json(result)
+  })
 })
 
-router.post('/', (req, res) => {
+app.post('/', (req, res) => {
   const { name, presence, num_presence, comment } = req.body
   const user_agent = req.headers['user-agent']
   const created_at = moment().format('YYYY-MM-DD HH:mm:ss')
@@ -54,9 +52,6 @@ router.post('/', (req, res) => {
   })
 })
 
-app.use('/.netlify/functions/api', router);
-module.exports.handler = serverless(app);
-
-// app.listen(3000, () => {
-//   console.log(`Wedding invitation api listening on port ${port}`)
-// })
+app.listen(port, () => {
+  console.log(`Wedding invitation backend listening on port ${port}`)
+})
