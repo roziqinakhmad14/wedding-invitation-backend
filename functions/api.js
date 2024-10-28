@@ -16,20 +16,21 @@ const corsOptions = {
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 
-app.use(cors(corsOptions))
-app.use(bodyParser.json())
-app.use(requestIp.mw())
+router.use(cors(corsOptions))
+router.use(bodyParser.json())
+router.use(requestIp.mw())
 
 router.get('/', (req, res) => {
-  const limit = req.query.per ? Number(req.query.per) : 10;
-  const offset = req.query.next ? Number(req.query.next) : 0;
-  db.query(`SELECT * FROM comments ORDER BY created_at DESC LIMIT ${limit} OFFSET ${offset}`, (error, result) => {
-    result.map(item => {
-      item['created_at'] = moment.duration(moment(item['created_at']).diff(moment())).humanize() + ' lalu'
-      item['updated_at'] = moment.duration(moment(item['updated_at']).diff(moment())).humanize() + ' lalu'
-    })
-    res.status(200).json(result)
-  })
+  res.send('API is running')
+  // const limit = req.query.per ? Number(req.query.per) : 10;
+  // const offset = req.query.next ? Number(req.query.next) : 0;
+  // db.query(`SELECT * FROM comments ORDER BY created_at DESC LIMIT ${limit} OFFSET ${offset}`, (error, result) => {
+  //   result.map(item => {
+  //     item['created_at'] = moment.duration(moment(item['created_at']).diff(moment())).humanize() + ' lalu'
+  //     item['updated_at'] = moment.duration(moment(item['updated_at']).diff(moment())).humanize() + ' lalu'
+  //   })
+  //   res.status(200).json(result)
+  // })
 })
 
 router.post('/', (req, res) => {
