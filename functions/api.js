@@ -1,12 +1,13 @@
 const express = require('express')
+const serverless = require('serverless-http')
+const app = express()
+const router = express.Router()
 const moment = require('moment')
 const bodyParser = require('body-parser')
-const db = require('./connection')
+const db = require('../connection')
 const cors = require('cors')
 const uuid = require('uuid')
 const requestIp = require('request-ip')
-const app = express()
-const port = 3000
 
 moment.locale('id')
 
@@ -19,9 +20,9 @@ app.use(cors(corsOptions))
 app.use(bodyParser.json())
 app.use(requestIp.mw())
 
-app.get('/', (req, res) => {
-  const limit = Number(req.query.per)
-  const offset = Number(req.query.next)
+router.get('/', (req, res) => {
+  const limit = req.query.per ? Number(req.query.per) : 10;
+  const offset = req.query.next ? Number(req.query.next) : 0;
   db.query(`SELECT * FROM comments ORDER BY created_at DESC LIMIT ${limit} OFFSET ${offset}`, (error, result) => {
     result.map(item => {
       item['created_at'] = moment.duration(moment(item['created_at']).diff(moment())).humanize() + ' lalu'
@@ -31,7 +32,7 @@ app.get('/', (req, res) => {
   })
 })
 
-app.post('/', (req, res) => {
+router.post('/', (req, res) => {
   const { name, presence, num_presence, comment } = req.body
   const user_agent = req.headers['user-agent']
   const created_at = moment().format('YYYY-MM-DD HH:mm:ss')
@@ -52,6 +53,9 @@ app.post('/', (req, res) => {
   })
 })
 
-app.listen(port, () => {
-  console.log(`Wedding invitation api listening on port ${port}`)
-})
+app.use('/.netlify/functions/api', router);
+module.exports.handler = serverless(app);
+
+// app.listen(3000, () => {
+//   console.log(`Wedding invitation api listening on port ${port}`)
+// })
