@@ -115,7 +115,7 @@ app.put('/api/comment/:id', (req, res) => {
   const id = req.params.id
   const { presence, num_presence, comment } = req.body
   const updated_at = moment().format('YYYY-MM-DD HH:mm:ss')
-  db.query(`UPDATE comments SET presence = '${presence}', num_presence = '${num_presence}', comment = '${comment}', updated_at = '${updated_at}' WHERE own LIKE '${id}'`, (error, result) => {
+  db.query(`UPDATE comments SET presence = '${Number(presence)}', num_presence = '${num_presence}', comment = '${comment}', updated_at = '${updated_at}' WHERE own LIKE '${id}'`, (error, result) => {
     res.status(200).json({
       code: 200, 
       data: {
