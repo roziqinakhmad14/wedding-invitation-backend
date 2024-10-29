@@ -61,8 +61,8 @@ app.get('/api/comment', (req, res) => {
   const offset = req.query.next ? Number(req.query.next) : 0;
   db.query(`SELECT * FROM comments ORDER BY created_at DESC LIMIT ${limit} OFFSET ${offset}`, (error, result) => {
     result?.map(item => {
-      item['created_at'] = moment.duration(moment(item['created_at']).diff(moment())).humanize()
-      item['updated_at'] = moment.duration(moment(item['updated_at']).diff(moment())).humanize()
+      item['created_at'] = moment(item['created_at']).fromNow()
+      item['updated_at'] = moment(item['updated_at']).fromNow()
     })
     res.status(200).json({
       code: 200,
@@ -89,7 +89,7 @@ app.post('/api/comment', (req, res) => {
         comment: comment,
         uuid: myuuid,
         own: own,
-        created_at: moment.duration(moment().diff(moment())).humanize() + ' lalu',
+        created_at: moment().fromNow(),
       },
     })
   })
@@ -100,8 +100,8 @@ app.get('/api/comment/:id', (req, res) => {
   const id = req.params.id
   db.query(`SELECT * FROM comments WHERE uuid LIKE '${id}'`, (error, result) => {
     result?.map(item => {
-      item['created_at'] = moment.duration(moment(item['created_at']).diff(moment())).humanize() + ' lalu'
-      item['updated_at'] = moment.duration(moment(item['updated_at']).diff(moment())).humanize() + ' lalu'
+      item['created_at'] = moment(item['created_at']).fromNow()
+      item['updated_at'] = moment(item['updated_at']).fromNow()
     })
     res.status(200).json({
       code: 200, 
