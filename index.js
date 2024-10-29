@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const moment = require('moment')
+const moment = require('moment-timezone')
 const bodyParser = require('body-parser')
 const db = require('./connection')
 const cors = require('cors')
@@ -8,6 +8,7 @@ const uuid = require('uuid')
 const requestIp = require('request-ip')
 const port = 3000
 
+moment.tz.setDefault('Asia/Jakarta')
 moment.locale('id')
 moment.updateLocale('id', {
   weekdays: ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jum\'at', 'Sabtu'],
