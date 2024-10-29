@@ -48,9 +48,10 @@ app.use(requestIp.mw())
 app.get('/api/config', (req, res) => {
   const access_key = req.headers['x-access-key']
   db.query(`SELECT * FROM users WHERE access_key LIKE '${access_key}'`, (error, result) => {
+    const { name, can_reply, can_edit, can_delete } = result[0]
     res.status(200).json({
       code: 200,
-      data: result[0]
+      data: {...{ name, can_reply, can_edit, can_delete }}
     })
   })
 })
