@@ -9,6 +9,30 @@ const requestIp = require('request-ip')
 const port = 3000
 
 moment.locale('id')
+moment.updateLocale('id', {
+  weekdays: ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jum\'at', 'Sabtu'],
+  weekdaysShort: ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'],
+  months: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
+  monthsShort: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
+  relativeTime : {
+      future : '%s yang akan datang',
+      past : '%s yang lalu',
+      s: 'Beberapa detik',
+      ss : '%d detik',
+      m:  '1 menit',
+      mm: '%d menit',
+      h:  '1 jam',
+      hh: '%d jam',
+      d:  '1 hari',
+      dd: '%d hari',
+      w:  '1 minggu',
+      ww: '%d minggu',
+      M:  '1 bulan',
+      MM: '%d bulan',
+      y:  '1 tahun',
+      yy: '%d tahun'
+  },
+});
 
 // Set CORS options
 const corsOptions = {
@@ -37,8 +61,8 @@ app.get('/api/comment', (req, res) => {
   const offset = req.query.next ? Number(req.query.next) : 0;
   db.query(`SELECT * FROM comments ORDER BY created_at DESC LIMIT ${limit} OFFSET ${offset}`, (error, result) => {
     result?.map(item => {
-      item['created_at'] = moment.duration(moment(item['created_at']).diff(moment())).humanize() + ' lalu'
-      item['updated_at'] = moment.duration(moment(item['updated_at']).diff(moment())).humanize() + ' lalu'
+      item['created_at'] = moment.duration(moment(item['created_at']).diff(moment())).humanize()
+      item['updated_at'] = moment.duration(moment(item['updated_at']).diff(moment())).humanize()
     })
     res.status(200).json({
       code: 200,
