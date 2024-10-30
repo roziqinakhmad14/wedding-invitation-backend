@@ -197,8 +197,8 @@ app.post('/api/session', (req, res) => {
   let { email, password } = req.body
   db.query(`SELECT id, name, email, password FROM users WHERE email = '${email}'`, async (error, result) => {
     const user = result[0]
-    res.json({ data: user })
-    // const is_same = await bcrypt.compare(password, user.password)
+    const is_same = await bcrypt.compare(password, user.password)
+    res.json({ data: is_same })
     // if (is_same) {
     //   let { password, ...data } = user
     //   const secret = process.env.JWT_KEY
