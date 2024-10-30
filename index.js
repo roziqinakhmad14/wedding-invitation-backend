@@ -195,45 +195,45 @@ app.delete('/api/comment/:id', (req, res) => {
 // Login Authentication
 app.post('/api/session', (req, res) => {
   let { email, password } = req.body
-  res.json({...{ email, password }})
-  // db.query(`SELECT id, name, email, password FROM users WHERE email = '${email}'`, async (error, result) => {
-  //   const user = result[0]
-  //   const is_same = await bcrypt.compare(password, user.password)
-  //   if (is_same) {
-  //     let { password, ...data } = user
-  //     const secret = process.env.JWT_KEY
-  //     const token = sign(
-  //       {
-  //         id: user.id,
-  //         name: user.name,
-  //         email: user.email,
-  //         is_admin: true,
-  //         iat: moment().unix(),
-  //         exp: moment().add(1, 'h').unix(),
-  //         iss: req.headers.host
-  //       }, 
-  //       secret, 
-  //       {
-  //         alg: 'HS256'
-  //       }
-  //     )
-  //     res.status(200).json({
-  //       code: 200,
-  //       data: {
-  //         token: token,
-  //         user: {
-  //           name: user.name,
-  //           email: user.email,
-  //         }
-  //       },
-  //     })
-  //   } else {
-  //     res.status(401).json({
-  //       code: 401,
-  //       message: 'UNAUTHORIZED'
-  //     })
-  //   }
-  // })
+  db.query(`SELECT id, name, email, password FROM users WHERE email = '${email}'`, async (error, result) => {
+    const user = result[0]
+    res.json({ data: user })
+    // const is_same = await bcrypt.compare(password, user.password)
+    // if (is_same) {
+    //   let { password, ...data } = user
+    //   const secret = process.env.JWT_KEY
+    //   const token = sign(
+    //     {
+    //       id: user.id,
+    //       name: user.name,
+    //       email: user.email,
+    //       is_admin: true,
+    //       iat: moment().unix(),
+    //       exp: moment().add(1, 'h').unix(),
+    //       iss: req.headers.host
+    //     }, 
+    //     secret, 
+    //     {
+    //       alg: 'HS256'
+    //     }
+    //   )
+    //   res.status(200).json({
+    //     code: 200,
+    //     data: {
+    //       token: token,
+    //       user: {
+    //         name: user.name,
+    //         email: user.email,
+    //       }
+    //     },
+    //   })
+    // } else {
+    //   res.status(401).json({
+    //     code: 401,
+    //     message: 'UNAUTHORIZED'
+    //   })
+    // }
+  })
 })
 
 // GET user
