@@ -199,40 +199,40 @@ app.post('/api/session', (req, res) => {
     const user = result[0]
     const is_same = await bcrypt.compare(password, user.password)
     res.json({ data: is_same })
-    // if (is_same) {
-    //   let { password, ...data } = user
-    //   const secret = process.env.JWT_KEY
-    //   const token = sign(
-    //     {
-    //       id: user.id,
-    //       name: user.name,
-    //       email: user.email,
-    //       is_admin: true,
-    //       iat: moment().unix(),
-    //       exp: moment().add(1, 'h').unix(),
-    //       iss: req.headers.host
-    //     }, 
-    //     secret, 
-    //     {
-    //       alg: 'HS256'
-    //     }
-    //   )
-    //   res.status(200).json({
-    //     code: 200,
-    //     data: {
-    //       token: token,
-    //       user: {
-    //         name: user.name,
-    //         email: user.email,
-    //       }
-    //     },
-    //   })
-    // } else {
-    //   res.status(401).json({
-    //     code: 401,
-    //     message: 'UNAUTHORIZED'
-    //   })
-    // }
+    if (is_same) {
+      let { password, ...data } = user
+      const secret = process.env.JWT_KEY
+      const token = sign(
+        {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          is_admin: true,
+          iat: moment().unix(),
+          exp: moment().add(1, 'h').unix(),
+          iss: req.headers.host
+        }, 
+        secret, 
+        {
+          alg: 'HS256'
+        }
+      )
+      res.status(200).json({
+        code: 200,
+        data: {
+          token: token,
+          user: {
+            name: user.name,
+            email: user.email,
+          }
+        },
+      })
+    } else {
+      res.status(401).json({
+        code: 401,
+        message: 'UNAUTHORIZED'
+      })
+    }
   })
 })
 
