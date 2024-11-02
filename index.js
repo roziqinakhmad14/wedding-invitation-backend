@@ -111,7 +111,7 @@ app.get('/api/comment', (req, res) => {
 
 // CREATE a new comment
 app.post('/api/comment', (req, res) => {
-  run('user', req, res, null,
+  run('user', req, res,
     () => {
       const { name, presence, num_presence, comment } = req.body
       const user_agent = req.headers['user-agent']
