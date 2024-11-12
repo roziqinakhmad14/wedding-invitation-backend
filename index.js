@@ -260,8 +260,10 @@ app.get('/api/stats', (req, res) => {
       const data = jwtDecode(token)
       db.query(`SELECT * FROM comments WHERE user_id = '${data.id}'`, (error1, result1) => {
         db.query(`SELECT * FROM likes WHERE user_id = '${data.id}'`, (error2, result2) => {
-          const present = result1.length ? result1.filter(i => i?.presence).map(i => i?.num_presence).reduce((i, j) => i + j) : 0
-          const absent = result1.length ? result1.filter(i => !i?.presence).map(i => i?.num_presence).reduce((i, j) => i + j) : 0
+          const present_array = result1.length ? result1.filter(i => i?.presence).map(i => i?.num_presence) : []
+          const absent_array = result1.length ? result1.filter(i => !i?.presence).map(i => i?.num_presence) : []
+          const present = present_array.length ? present_array.reduce((i, j) => i + j) : 0
+          const absent = absent_array.length ? absent_array.reduce((i, j) => i + j) : 0
           const comments = result1.length
           const likes = result2.length
           res.status(200).json({
