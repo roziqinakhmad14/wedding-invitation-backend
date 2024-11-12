@@ -32,7 +32,7 @@ const run = (role, req, res, callback) => {
     if (req.headers.authorization) {
       const [ header, token ] = req.headers.authorization.split(' ')
       const data = jwtDecode(token)
-      db.query(`SELECT * FROM comments WHERE user_id = '${data.id}'`, (error, result) => {
+      db.query(`SELECT * FROM users WHERE \`id\` = '${data.id}'`, (error, result) => {
         if (result.length) {
           callback()
         } else {
@@ -57,7 +57,7 @@ const run = (role, req, res, callback) => {
         if (req.headers.authorization) {
           const [ header, token ] = req.headers.authorization.split(' ')
           const data = jwtDecode(token)
-          db.query(`SELECT * FROM comments WHERE user_id = '${data.id}'`, (error, result) => {
+          db.query(`SELECT * FROM users WHERE \`id\` = '${data.id}'`, (error, result) => {
             if (result.length) {
               callback()
             } else {
@@ -260,8 +260,8 @@ app.get('/api/stats', (req, res) => {
       const data = jwtDecode(token)
       db.query(`SELECT * FROM comments WHERE user_id = '${data.id}'`, (error1, result1) => {
         db.query(`SELECT * FROM likes WHERE user_id = '${data.id}'`, (error2, result2) => {
-          const present = result1.filter(i => i.presence).map(i => i.num_presence).reduce((i, j) => i + j) ?? 0
-          const absent = result1.filter(i => !i.presence).map(i => i.num_presence).reduce((i, j) => i + j) ?? 0
+          const present = result1.length ? result1.filter(i => i?.presence).map(i => i?.num_presence).reduce((i, j) => i + j) : 0
+          const absent = result1.length ? result1.filter(i => !i?.presence).map(i => i?.num_presence).reduce((i, j) => i + j) : 0
           const comments = result1.length
           const likes = result2.length
           res.status(200).json({
